@@ -1,1 +1,1 @@
-# IOTX-token-contracts
+# Smart Contracts for minting IOTX tokens
