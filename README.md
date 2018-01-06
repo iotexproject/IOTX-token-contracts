@@ -1,1 +1,1 @@
-# Smart Contracts for minting IOTX tokens
+# Smart Contracts for IOTX ERC20 tokens
