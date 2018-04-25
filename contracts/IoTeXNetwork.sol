@@ -1,28 +1,27 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.21;
 
-import './zeppelin/math/SafeMath.sol';
-import './zeppelin/lifecycle/Pausable.sol';
-import './zeppelin/token/BasicToken.sol';
-import './zeppelin/token/ERC20.sol';
-import './zeppelin/token/ERC20Basic.sol';
-import './zeppelin/token/StandardToken.sol';
+import './math/SafeMath.sol';
+import './lifecycle/Pausable.sol';
+import './token/BasicToken.sol';
+import './token/ERC20.sol';
+import './token/ERC20Basic.sol';
+import './token/StandardToken.sol';
 
 contract IoTeXNetwork is StandardToken, Pausable {
-    string  public  constant name = "IoTeX Network";
-    string  public  constant symbol = "IOTX";
-    uint    public  constant decimals = 18;
+    string public constant name = "IoTeX Network";
+    string public constant symbol = "IOTXTEST";
+    uint8 public constant decimals = 18;
 
-    modifier validDestination( address to ) {
+    modifier validDestination(address to) {
         require(to != address(0x0));
         require(to != address(this) );
         _;
     }
 
-    function IoTeXNetwork( uint tokenTotalAmount) {
-        // Mint all tokens. Then disable minting forever.
+    function IoTeXNetwork(uint tokenTotalAmount) {
+        totalSupply_ = tokenTotalAmount;
         balances[msg.sender] = tokenTotalAmount;
-        totalSupply = tokenTotalAmount;
-        Transfer(address(0x0), msg.sender, tokenTotalAmount);
+        emit Transfer(address(0x0), msg.sender, tokenTotalAmount);
     }
 
     function transfer(address _to, uint _value) whenNotPaused
