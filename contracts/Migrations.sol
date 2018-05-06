@@ -8,10 +8,19 @@ contract Migrations {
     if (msg.sender == owner) _;
   }
 
+  /*@CTK init_migrations
+    @post __post.owner == msg.sender
+   */
+  /* CertiK Smart Labelling, for more details visit: https://certik.org */
   function Migrations() public {
     owner = msg.sender;
   }
 
+  /*@CTK set_complete
+    @pre msg.sender == owner
+    @post __post.last_completed_migration == completed
+   */
+  /* CertiK Smart Labelling, for more details visit: https://certik.org */
   function setCompleted(uint completed) public restricted {
     last_completed_migration = completed;
   }
