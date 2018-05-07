@@ -22,6 +22,15 @@ contract StandardToken is ERC20, BasicToken {
    * @param _to address The address which you want to transfer to
    * @param _value uint256 the amount of tokens to be transferred
    */
+  /*@CTK transferFrom
+    @tag assume_completion
+    @pre _from != _to
+    @post __return == true
+    @post __post.balances[_to] == balances[_to] + _value
+    @post __post.balances[_from] == balances[_from] - _value
+    @post __has_overflow == false
+   */
+  /* CertiK Smart Labelling, for more details visit: https://certik.org */
   function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
     require(_to != address(0));
     require(_value <= balances[_from]);
@@ -44,6 +53,15 @@ contract StandardToken is ERC20, BasicToken {
    * @param _spender The address which will spend the funds.
    * @param _value The amount of tokens to be spent.
    */
+  /*@CTK approve_success
+    @post _value == 0 -> __reverted == false
+    @post allowed[msg.sender][_spender] == 0 -> __reverted == false
+   */
+  /*@CTK approve
+    @tag assume_completion
+    @post __post.allowed[msg.sender][_spender] == _value
+   */
+  /* CertiK Smart Labelling, for more details visit: https://certik.org */
   function approve(address _spender, uint256 _value) public returns (bool) {
     allowed[msg.sender][_spender] = _value;
     emit Approval(msg.sender, _spender, _value);
@@ -70,6 +88,12 @@ contract StandardToken is ERC20, BasicToken {
    * @param _spender The address which will spend the funds.
    * @param _addedValue The amount of tokens to increase the allowance by.
    */
+  /*@CTK CtkIncreaseApprovalEffect
+    @tag assume_completion
+    @post __post.allowed[msg.sender][_spender] == allowed[msg.sender][_spender] + _addedValue
+    @post __has_overflow == false
+   */
+  /* CertiK Smart Labelling, for more details visit: https://certik.org */
   function increaseApproval(address _spender, uint _addedValue) public returns (bool) {
     allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);
     emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
@@ -86,6 +110,19 @@ contract StandardToken is ERC20, BasicToken {
    * @param _spender The address which will spend the funds.
    * @param _subtractedValue The amount of tokens to decrease the allowance by.
    */
+  /*@CTK CtkDecreaseApprovalEffect_1
+    @pre allowed[msg.sender][_spender] >= _subtractedValue
+    @tag assume_completion
+    @post __post.allowed[msg.sender][_spender] == allowed[msg.sender][_spender] - _subtractedValue
+    @post __has_overflow == false
+   */
+   /*@CTK CtkDecreaseApprovalEffect_2
+    @pre allowed[msg.sender][_spender] < _subtractedValue
+    @tag assume_completion
+    @post __post.allowed[msg.sender][_spender] == 0
+    @post __has_overflow == false
+   */
+  /* CertiK Smart Labelling, for more details visit: https://certik.org */
   function decreaseApproval(address _spender, uint _subtractedValue) public returns (bool) {
     uint oldValue = allowed[msg.sender][_spender];
     if (_subtractedValue > oldValue) {
